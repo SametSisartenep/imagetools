@@ -121,15 +121,8 @@ modulate(double *d, double *s, int dim)
 static double
 convolve(double *d, double *s, int dim)
 {
-	int i, j;
-	double r;
-
 	modulate(d, s, dim);
-	r = 0;
-	for(j = 0; j < dim; j++)
-	for(i = 0; i < dim; i++)
-		r += d[j*dim+i];
-	return r;
+	return coeffsum(d, dim);
 }
 
 static uchar
