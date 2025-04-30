@@ -80,6 +80,16 @@ ewritememimage(int fd, Memimage *i)
 }
 
 void
+fprintm(int fd, double *m, int dim)
+{
+	int i, j;
+
+	for(j = 0; j < dim; j++)
+	for(i = 0; i < dim; i++)
+		fprint(fd, "%g%c", m[j*dim+i], i == dim-1? '\n': '\t');
+}
+
+void
 imgbinop(Memimage *i1, Memimage *i2, int(*op)(uchar, uchar), int saturate)
 {
 	uchar *p1, *p1e, *p2;

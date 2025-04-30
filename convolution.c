@@ -8,16 +8,6 @@
 static int dim;
 static int saturate;
 
-static void
-fprintm(int fd, double *m, int dim)
-{
-	int i, j;
-
-	for(j = 0; j < dim; j++)
-	for(i = 0; i < dim; i++)
-		fprint(fd, "%g%c", m[j*dim+i], i == dim-1? '\n': '\t');
-}
-
 static char *
 getline(Biobuf *b)
 {

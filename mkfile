@@ -8,6 +8,7 @@ TARG=\
 	sobel\
 	com\
 	genmask\
+	warp\
 
 OFILES=\
 	utils.$O\
