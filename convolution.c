@@ -6,7 +6,7 @@
 #include "fns.h"
 
 static int dim;
-static int saturate;
+static int saturate = 1;
 
 static char *
 getline(Biobuf *b)
@@ -172,13 +172,16 @@ subimgconvolution(Memimage *d, Memimage *s, Rectangle *r, double *k, int dim, do
 	free(im);
 }
 
-static void
-imgconvolution(Memimage *d, Memimage *s, double *k, int dim)
+static Memimage *
+imgconvolution(Memimage *s, double *k, int dim)
 {
+	Memimage *d;
 	double denom;
 	Rectangle *subr;
 	char *nprocs;
 	int nproc, i;
+
+	d = eallocmemimage(s->r, s->chan);
 
 	denom = coeffsum(k, dim);
 	denom = denom == 0? 1: 1/denom;
@@ -204,6 +207,7 @@ imgconvolution(Memimage *d, Memimage *s, double *k, int dim)
 		;
 
 	free(subr);
+	return d;
 }
 
 
@@ -222,7 +226,7 @@ main(int argc, char *argv[])
 	int fd;
 
 	ARGBEGIN{
-	case 's': saturate++; break;
+	case 's': saturate--; break;
 	default: usage();
 	}ARGEND;
 	if(argc != 1)
@@ -236,13 +240,12 @@ main(int argc, char *argv[])
 	kern = ckern;
 
 	in = ereadmemimage(0);
-	out = eallocmemimage(in->r, in->chan);
-
-	imgconvolution(out, in, kern, dim);
-	ewritememimage(1, out);
-
-	freememimage(out);
+	out = imgconvolution(in, kern, dim);
 	freememimage(in);
 	free(kern);
+
+	ewritememimage(1, out);
+	freememimage(out);
+
 	exits(nil);
 }

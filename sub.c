@@ -4,7 +4,7 @@
 #include <memdraw.h>
 #include "fns.h"
 
-static int saturate;
+static int saturate = 1;
 
 static int
 opsub(uchar b1, uchar b2)
@@ -26,7 +26,7 @@ main(int argc, char *argv[])
 	int i, fd;
 
 	ARGBEGIN{
-	case 's': saturate++; break;
+	case 's': saturate--; break;
 	default: usage();
 	}ARGEND;
 	if(argc != 2)

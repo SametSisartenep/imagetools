@@ -4,7 +4,7 @@
 #include <memdraw.h>
 #include "fns.h"
 
-static int saturate;
+static int saturate = 1;
 static int byangle;
 
 static int
@@ -33,7 +33,7 @@ main(int argc, char *argv[])
 	int i, fd;
 
 	ARGBEGIN{
-	case 's': saturate++; break;
+	case 's': saturate--; break;
 	case 'a': byangle++; break;
 	default: usage();
 	}ARGEND;
