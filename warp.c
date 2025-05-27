@@ -51,9 +51,9 @@ mkrotation(Matrix3 m, double θ, double φ, double γ)
 		0, 0, 1, 0,
 		0, 0, 0, 1,
 	};
-	mulm3(Ry, Rz);
-	mulm3(Rx, Ry);
-	memmove(m, Rx, sizeof(Matrix3));
+	mulm3(Ry, Rx);
+	mulm3(Rz, Ry);
+	memmove(m, Rz, sizeof(Matrix3));
 }
 
 static void
@@ -107,6 +107,11 @@ mkshear(Matrix3 m, double shx, double shy, double shz)
 	memmove(m, Sxz, sizeof(Matrix3));
 }
 
+/*
+ * references:
+ *	- http://stackoverflow.com/questions/17087446/how-to-calculate-perspective-transform-for-opencv-from-rotation-angles
+ * 	- http://jepsonsblog.blogspot.tw/2012/11/rotation-in-3d-using-opencvs.html
+ */
 static void
 mkxform(Matrix m, Mstk *stk, Memimage *s)
 {
@@ -116,7 +121,7 @@ mkxform(Matrix m, Mstk *stk, Memimage *s)
 
 	w = Dx(s->r);
 	h = Dy(s->r);
-	d = sqrt(w*w + h*h);
+	d = hypot(w, h);
 	focal = γ == 0? d: d / 2*sin(γ);
 
 	identity3(U);
@@ -133,7 +138,7 @@ mkxform(Matrix m, Mstk *stk, Memimage *s)
 	}, A1 = {
 		1, 0, -w/2, 0,
 		0, 1, -h/2, 0,
-		0, 0, 1, 0,
+		0, 0, 0, 0,
 		0, 0, 1, 0,
 	}, A2 = {
 		focal, 0, w/2, 0,
