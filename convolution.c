@@ -23,7 +23,7 @@ readkernel(int fd)
 {
 	Biobuf *bin;
 	double *kern;
-	char *line, *f[10];
+	char *line, *f[100];
 	int nf, i, j;
 
 	bin = Bfdopen(fd, OREAD);
@@ -118,8 +118,7 @@ convolve(double *d, double *s, int dim)
 static uchar
 sample(Memimage *i, Point p, int off)
 {
-	if(p.x < i->r.min.x || p.y < i->r.min.y
-	|| p.x >= i->r.max.x || p.y >= i->r.max.y)
+	if(!ptinrect(p, i->r))
 		return 0;	/* edge handler: constant */
 	return *(byteaddr(i, p) + off);
 }

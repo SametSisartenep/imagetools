@@ -1,0 +1,113 @@
+#!/bin/rc
+# based on https://github.com/jeffboody/Lanczos
+#
+rfork ne
+
+flagfmt=''
+args='winsize'
+
+if(! ifs=() eval `{aux/getflags $*} || ~ $#* 0){
+	aux/usage
+	exit usage
+}
+
+hoc <<EOF
+a=$1
+
+func sinc(x) {
+	if(x == 0) return 1
+	return sin(PI*x)/PI*x
+}
+
+func withinbounds(x) {
+	if(x > -a && x <= a) return 1
+	return 0
+}
+
+func L(x) {
+	if(!withinbounds(x)) return 0
+	return sinc(x)*sinc(x/a)
+}
+
+func lanczos(x) {
+	if(x == 0) return 1
+	if(x < -a || x >= a) return 0
+	return a*sin(PI*x)*sin(PI*x/a)/(PI^2*x^2)
+}
+
+func lanczos2(x, y) {
+	if(!withinbounds(x) || !withinbounds(y)) return 0
+	return sinc(sqrt(x^2+y^2))*sinc(sqrt(x^2+y^2)/a)
+}
+
+#Δ = 0.1
+#for(j = -a+1; j <= a; j++){
+#for(i = -a+1; i <= a; i++){
+#	if(i > -a+1) print "\t"
+#	w = 0
+##	for(k = -0.5; k <= 0.5; k += Δ){
+##	for(l = -0.5; l <= 0.5; l += Δ){
+##		w += lanczos(i+l)*lanczos(j+k)
+##	}
+##	}
+#	for(k = 0; k <= 1; k += Δ){
+#	for(l = 0; l <= 1; l += Δ){
+#		w += lanczos(i+l)*lanczos(j+k)
+#	}
+#	}
+#	print w*Δ*Δ
+##	print L(i)*L(j)
+#}
+#	print "\n"
+#}
+
+#Δi = 0.5
+#for(j = -a+1; j <= a; j += Δi){
+#for(i = -a+1; i <= a; i += Δi){
+#	if(i > -a+1) print "\t"
+##	print lanczos2(i, j)
+#	print lanczos(i)*lanczos(j)
+#	if(i == a) print "\n"
+#}
+#}
+
+print "co kblack\n"
+print "pe solid\n"
+print "ra -5 -1 5 1\n"
+Δi = 0.01
+for(i = -a+1; i <= a; i += Δi){
+	if(i == -a+1) print "move "
+	if(i > -a+1) print "vec "
+	print i
+	print " "
+	print lanczos(i)
+	print "\n"
+}
+print "co red\n"
+for(i = -a+1; i <= a; i += Δi){
+	if(i == -a+1) print "move "
+	if(i > -a+1) print "vec "
+	print i
+	print " "
+	print L(i)
+	print "\n"
+}
+print "co green\n"
+for(i = -a+1; i <= a; i += Δi){
+	if(i == -a+1) print "move "
+	if(i > -a+1) print "vec "
+	print i
+	print " "
+	print sin(i)
+	print "\n"
+}
+print "co blue\n"
+for(i = -a+1; i <= a; i += Δi){
+	if(i == -a+1) print "move "
+	if(i > -a+1) print "vec "
+	print i
+	print " "
+	print sin(i)*lanczos(i)
+	print "\n"
+}
+EOF

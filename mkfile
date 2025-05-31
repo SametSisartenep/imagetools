@@ -9,6 +9,7 @@ TARG=\
 	com\
 	genmask\
 	warp\
+	lanczos\
 
 OFILES=\
 	utils.$O\
