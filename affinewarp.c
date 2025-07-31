@@ -48,8 +48,6 @@ mkrotation(Matrix m, double θ)
 static void
 mkscale(Matrix m, double sx, double sy)
 {
-	sx = sx == 0? 1: 1/sx;
-	sy = sy == 0? 1: 1/sy;
 	Matrix S = {
 		sx, 0, 0,
 		0, sy, 0,
